@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!-- 콘솔로그-->
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" 
+				value="%t>[%d{yyyy-MM-dd HH:mm:ss}] [%c{1}] [%L] [%p] %m %n" />
+		</layout>
+	</appender>
+	
+	
+	<!-- - Daily File Appender : Trace -->
+	<!-- 
+	<appender name="TRACE_LOG" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="/logs/trace/Trace.Profile.log" />
+		<param name="Encoding" value="UTF-8" />
+		<param name="DatePattern" value="'.'yyyyMMddHH" />
+		<param name="ImmediateFlush" value="true" />
+		<param name="Append" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="@MATRIX@|%d{yyyy-MM-dd HH:mm:ss.SSS}|%p|%m%n" />
+		</layout>
+	</appender>
+	-->
+	
+	
+	<logger name="jk.*">
+        <level value="DEBUG"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+	
+	<logger name="TRACE_LOGGER" additivity="true">
+		<level value="DEBUG"/>
+		<appender-ref ref="CONSOLE"/>
+	</logger>
+	
+	
+	 
+	<root>
+		<level value="DEBUG"/>
+		<appender-ref ref="CONSOLE"/>
+	</root>
+	
+
+</log4j:configuration>

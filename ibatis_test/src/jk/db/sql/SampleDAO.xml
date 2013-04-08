@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sample">
+	<typeAlias alias="codeBookVO" type="jk.vo.CodeBookVO" />
+
+	<resultMap id="codeBookVOResult" class="codeBookVO">
+		<!--  <result property="id" column="ID" javaType="decimal" nullValue="0" /> -->
+		<result property="description" column="DESCRIPTION" />
+		<result property="code" column="CODE" />
+		<result property="name" column="NAME" />
+		<result property="type" column="TYPE" nullValue="0" />
+		<result property="ord" column="ORD" nullValue="0"  /> 
+		<result property="createDt" column="CREATE_DT" />
+		<result property="deleteDt" column="DELETE_DT" />
+	</resultMap>
+	
+	
+	<typeAlias alias="nagiNotiVO" type="jk.vo.NagiNotiVO" />
+	
+	<resultMap id="nagiNotiVOResult" class="nagiNotiVO">
+		<result property="id" column="ID" />
+		<result property="level" column="LEVEL" />
+		<result property="analysisId" column="ANALYSIS_ID" />
+		<result property="msg" column="MSG" />
+		<result property="createDt" column="CREATE_DT" />
+		<result property="resourceList" column="resourceId=ID, name=NAME, codeName=CODE_NAME, tableName=TABLE_NAME, resultColName=RESULT_COL_NAME" 
+			select="sample.getResourceList"/>
+	</resultMap>
+	
+	
+	<typeAlias alias="resourceVO" type="jk.vo.ResourceVO" />
+	
+	<resultMap id="resourceVOResult" class="resourceVO" >
+		<result property="resourceId" column="ID" />
+		<result property="codeName" column="CODE_NAME" />
+		<result property="name" column="NAME" />
+		<result property="resultColName" column="RESULT_COL_NAME" />
+		<result property="tableName" column="TABLE_NAME" />
+	</resultMap>
+	
+
+
+	<select id="get" resultClass="java.lang.String">
+		SELECT '1000' STRCOUNT FROM DUAL
+ 	</select>
+ 	
+ 	<select id="day" resultClass="java.lang.String">
+ 		SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD')  FROM DUAL
+ 	</select>
+ 	
+
+	<!-- 	codeList	 -->
+	<select id="codeList" parameterClass="codeBookVO" resultMap="codeBookVOResult" >
+		SELECT 
+			  TYPE
+			 , ORD
+			 , CODE
+			 , NAME	
+			 , DESCRIPTION
+			 , CREATE_DT
+			 , DELETE_DT
+		 FROM TB_CODEBOOK
+		 
+	</select>
+
+	
+	<!-- sql -->
+	<sql id="tempCodeBook">
+		SELECT
+		<isNotEmpty property="id">
+		 '$id$' AS ID ,
+		</isNotEmpty>
+		 '$code$' AS CODE ,
+		 '$name$' AS NAME ,
+		 UPPER('$description$') AS DESCRIPTION
+		FROM DUAL
+ 	</sql>
+
+	<select id="setCodeBook" parameterClass="codeBookVO" resultMap="codeBookVOResult">
+		<include refid="tempCodeBook" />
+	</select>
+	
+	
+	<!--  nagiNoti -->
+	<sql id="getNagiNotiSql">
+		SELECT 
+			ID
+			, SERVICE_ID
+			, ANALYSIS_ID
+			, LEVEL 
+			, MSG 
+			, CREATE_DT 
+		FROM TB_NOTI_NAGIOS
+	</sql>
+	
+	<sql id="getNagiNotiWhereSQL">
+		WHERE ID = #id# 
+	</sql>
+	
+	<select id="getNagiNotiList" parameterClass="nagiNotiVO" resultMap="nagiNotiVOResult" >
+		<include refid="getNagiNotiSql" />
+		<include refid="getNagiNotiWhereSQL" />
+	</select>
+	
+	
+	<sql id="resourceSQL">
+		SELECT 
+		 ID AS RESOURCE_ID
+		 , NAME
+		 , CODENAME
+		 , TABLENAME
+		 , RESULT_COL_NAME
+		 FROM TB_RESOURCE
+	</sql>
+	<sql id="resourceWhere">
+		WHERE ID = #resourceId#
+	</sql>
+	
+
+	
+	<select id="getResourceList" resultMap="resourceVOResult" >
+		<include refid="resourceSQL" />
+	</select>
+	
+
+</sqlMap>
+	
+

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+	"http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	
+	<properties resource="conf/SqlMapConfig.properties" />
+	
+	<!-- setting --> 
+	 <settings cacheModelsEnabled="true" 
+	 	enhancementEnabled="true"
+		lazyLoadingEnabled="true" 
+		maxRequests="512" 
+		maxSessions="128"
+		maxTransactions="32" 
+		useStatementNamespaces="true"
+		defaultStatementTimeout="60" />
+	
+	
+	<!-- DB -->    
+	 <transactionManager type="JDBC" >
+	    <dataSource type="SIMPLE">
+	      <property name="JDBC.Driver" value="${driver}" />
+	      <property name="JDBC.ConnectionURL" value="${url}" />
+	      <property name="JDBC.Username" value="${username}" />
+	      <property name="JDBC.Password" value="${password}" />
+	    </dataSource>
+	 </transactionManager>	
+	 <!--  -->
+	
+
+	<!-- sql -->
+	<sqlMap resource="jk/db/sql/SampleDAO.xml" />
+	<sqlMap resource="jk/db/sql/sql-basic.xml" />
+</sqlMapConfig>

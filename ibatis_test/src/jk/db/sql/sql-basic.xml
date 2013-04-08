@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="basic">
+
+	<typeAlias alias="empVO" type="jk.vo.EmpVO" />
+	<typeAlias alias="deptVO" type="jk.vo.DeptVO"/>
+	
+	<typeAlias alias="hMap" type="java.util.HashMap"/>
+	
+	<typeAlias alias="groupVO" type="jk.vo.GroupVO"/>
+	
+	
+	<resultMap id="groupVOResult" class="groupVO">
+		<result property="name" column="ENAME" />
+		<result property="vo.code" column="JOB" />
+		<result property="vo.innerData" column="COMM" />
+		<result property="vo.data" column="DEPTNO" />
+	</resultMap>
+	
+
+
+	<resultMap id="empVOResult" class="empVO">
+		<result property="empno" column="EMPNO"/>
+		<result property="ename" column="ENAME" />
+		<result property="job" column="JOB" />
+		<result property="mgr" column="MGR" />
+		<result property="hiredate" column="HIREDATE"/>
+		<result property="sal" column="SAL"  /> 
+		<result property="comm" column="COMM" />
+		<result property="deptno" column="DEPTNO" />
+		<result property="deptList" column="id=DEPTNO"  select="basic.getDeptList" />
+		<result property="deptOtherList" column="id=DEPTNO"  select="basic.getDeptList" />  	
+	</resultMap>
+	
+	<resultMap id="deptVOResult" class="deptVO" >
+		<result property="id" column="DEPTNO" />
+		<result property="dname" column="DNAME" />
+		<result property="loc" column="LOC" />
+	</resultMap>
+
+
+<sql id="sqlEmp">
+	SELECT 
+		EMPNO
+		, ENAME
+		, JOB
+		, MGR
+		, TO_CHAR( HIREDATE, 'YYYY-MM-DD') HIREDATE 
+		, SAL
+		, COMM
+		, DEPTNO 
+	FROM EMP
+</sql>	
+
+<sql id="sqlDept">
+	SELECT 
+		  DEPTNO
+		, DNAME
+		, LOC
+     FROM DEPT
+</sql>
+
+
+<select id="getDeptList" resultMap="deptVOResult" parameterClass="deptVO" >
+	<include refid="sqlDept" />
+</select>
+
+<select id="getEmpList" parameterClass="empVO" resultMap="empVOResult">
+	<include refid="sqlEmp"/>
+</select>
+
+
+<sql id="dynamicTable">
+	SELECT * FROM $TABLE_NAME$
+</sql>
+	
+
+<select id="getDynamicList"	resultClass="hMap" parameterClass="java.util.Map">
+	<include refid="dynamicTable" />
+</select>
+
+<select id="getDList" resultMap="groupVOResult" parameterClass="groupVO">
+	SELECT  
+		 ENAME
+		, JOB
+		, COMM
+		, DEPTNO 	
+	FROM EMP
+</select>
+
+<select id="getMap" resultClass="hMap">
+	SELECT 
+		ENAME
+		, JOB
+		, COMM
+		, DEPTNO
+	FROM EMP
+	ORDER BY ENAME
+</select>
+
+
+
+<insert id="insertEmp" >
+	<selectKey keyProperty="EMPNO" resultClass="int">
+		SELECT NEXTVAL(#seqName#)
+	</selectKey>
+	INSERT INTO EMP
+		(empno, ename, job, mgr, hiredate, sal, comm, deptno)
+	VALUES
+		(#empno#, #ename#, #job#, #mgr#, #hiredate#, #sal#, #comm#, #deptno#)
+</insert>
+
+	
+</sqlMap>
